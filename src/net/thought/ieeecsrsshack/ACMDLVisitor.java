@@ -30,7 +30,6 @@ public class ACMDLVisitor implements TagNodeVisitor {
 					if (tl.get(i) instanceof ContentNode) {
 						ContentNode t = (ContentNode)tl.get(i);
 						if ("Recently loaded issues and proceedings:".equals(t.toString())) {
-							System.out.println("found it!");
 							parseRecent(tag.getParent());
 							return (false);
 						}
@@ -82,9 +81,9 @@ public class ACMDLVisitor implements TagNodeVisitor {
 			href = href.replaceAll("&CFID=[0-9]+", "");
 			href = href.replaceAll("&CFTOKEN=[0-9]+", "");
 			href = "http://dl.acm.org/" + href;
-			name = name + " (" + subname + ")";
+			String fullname = name + " (" + subname + ")";
 			try {
-				theList.add(new ACMDLEntry(name, href));
+				theList.add(new ACMDLEntry(fullname, href));
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
