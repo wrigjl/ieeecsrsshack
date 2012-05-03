@@ -5,6 +5,9 @@ xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet>
+		<servlet-name>ACMDLUpdater</servlet-name>
+		<servlet-class>net.thought.ieeecsrsshack.ACMUpdaterServlet</servlet-class>
+	</servlet><servlet>
 		<servlet-name>IEEECSJournal</servlet-name>
 		<servlet-class>net.thought.ieeecsrsshack.IEEECSJournalServlet</servlet-class>
 	</servlet>
@@ -23,4 +26,16 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
+	<servlet-mapping>
+		<servlet-name>ACMDLUpdater</servlet-name>
+		<url-pattern>/acmdlupdater</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ACMDisplay</servlet-name>
+		<url-pattern>/acmdisplay</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>ACMDisplay</servlet-name>
+		<servlet-class>net.thought.ieeecsrsshack.ACMDisplayServlet</servlet-class>
+	</servlet>
 </web-app>
