@@ -3,6 +3,8 @@ package net.thought.ieeecsrsshack;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+
 import javax.servlet.http.*;
 import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.HtmlCleaner;
@@ -41,6 +43,8 @@ public abstract class ACMUpdater extends HttpServlet {
 			System.exit(1);
 		}
 
-		tagnode.traverse(new ACMDLVisitor());
+		ACMDLVisitor visitor = new ACMDLVisitor(); 
+		tagnode.traverse(visitor);		
+		List<ACMDLEntry> elist = visitor.getList();
 	}
 }

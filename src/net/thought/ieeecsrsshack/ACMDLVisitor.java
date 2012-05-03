@@ -1,5 +1,7 @@
 package net.thought.ieeecsrsshack;
 
+import java.net.MalformedURLException;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.htmlcleaner.ContentNode;
@@ -8,6 +10,17 @@ import org.htmlcleaner.TagNode;
 import org.htmlcleaner.TagNodeVisitor;
 
 public class ACMDLVisitor implements TagNodeVisitor {
+	private List<ACMDLEntry> theList;
+	
+	ACMDLVisitor() {
+		super();
+		theList = new LinkedList<ACMDLEntry>();
+	}
+	
+	public List<ACMDLEntry> getList() {
+		return theList;
+	}
+	
 	public boolean visit(TagNode tn, HtmlNode htmlNode) {
 		if (htmlNode instanceof TagNode) {
 			TagNode tag = (TagNode)htmlNode;
@@ -69,7 +82,13 @@ public class ACMDLVisitor implements TagNodeVisitor {
 			href = href.replaceAll("&CFID=[0-9]+", "");
 			href = href.replaceAll("&CFTOKEN=[0-9]+", "");
 			href = "http://dl.acm.org/" + href;
-			System.out.println("full(" + name + ", " + subname + ", href=" + href + ")");
+			name = name + " (" + subname + ")";
+			try {
+				theList.add(new ACMDLEntry(name, href));
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 }
