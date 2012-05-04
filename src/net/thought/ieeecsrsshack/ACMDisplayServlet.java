@@ -26,29 +26,34 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 
-// TODO java doc-ify
+/**
+ * Servlet that reads ACMDL entries from the datastore and
+ * formats the output into RSS.
+ * 
+ * @author Jason L. Wright (jason@thought.net)
+ *
+ */
 @SuppressWarnings("serial")
 public class ACMDisplayServlet extends HttpServlet {
 	
+	/**
+	 * Constructor: just build the date format for all date objects
+	 */
 	public ACMDisplayServlet() {
 		dateformat = new SimpleDateFormat("EEE, dd MMM YYYY HH:mm:ss Z");
 	}
-
+	
+	/**
+	 * Read from the datastore and produce the RSS output.
+	 * 
+	 * @param req request object
+	 * @param resp response object
+	 * @throws IOException
+	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
 		resp.setContentType("application/rss+xml");
 		
-		formatRss(resp);
-	}
-
-	static public Element createSimpleText(Document doc, Element root, String name, String value) {
-		Element e = doc.createElement(name);
-		root.appendChild(e);
-		e.appendChild(doc.createTextNode(value));
-		return e;
-	}
-	
-	public void formatRss(HttpServletResponse resp) throws IOException {
 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 		
 		DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
@@ -107,6 +112,22 @@ public class ACMDisplayServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+	}
+
+	/**
+	 * Create a new element named 'name' with parent 'root' and a text child 'value'.
+	 * 
+	 * @param doc Document object
+	 * @param root element that the new element should be attached to
+	 * @param name name of the new element
+	 * @param value value for the text of the new object
+	 * @return new element (child of 'root')
+	 */
+	static public Element createSimpleText(Document doc, Element root, String name, String value) {
+		Element e = doc.createElement(name);
+		root.appendChild(e);
+		e.appendChild(doc.createTextNode(value));
+		return e;
 	}
 	
 	private SimpleDateFormat dateformat;
