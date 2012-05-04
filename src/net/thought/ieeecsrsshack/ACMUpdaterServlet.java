@@ -18,7 +18,7 @@ import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 
-
+// TODO javadoc-ify
 @SuppressWarnings("serial")
 public class ACMUpdaterServlet extends HttpServlet {
 	final private String url = "http://dl.acm.org/";
@@ -26,19 +26,13 @@ public class ACMUpdaterServlet extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
 		resp.setContentType("text/html");
-		parseXmlFile(resp);
-	}
-
-	private void parseXmlFile(HttpServletResponse rsp) throws IOException {
 		HtmlCleaner cleaner = new HtmlCleaner();
 
+		// step 1: grab the current web page
 		CleanerProperties props = cleaner.getProperties();
 		props.setNamespacesAware(false);
-
 		TagNode tagnode = null;
 		try {
-			System.setProperty("http.proxyHost", "webbalance.inel.gov");
-			System.setProperty("http.proxyPort", "8080");
 			tagnode = cleaner.clean(new URL(url));
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
@@ -53,23 +47,13 @@ public class ACMUpdaterServlet extends HttpServlet {
 			System.exit(1);
 		}
 
+		// Step 2: traverse the page and build entries
 		ACMDLVisitor visitor = new ACMDLVisitor(); 
 		tagnode.traverse(visitor);		
-		updateDataStore(visitor.getList());
-	}
-	
-	Entity createEntity(ACMDLEntry e) {
-		Entity ety = new Entity("ACMDLEntry");
-		ety.setProperty(ACMDLEntry.URL, e.getURL().toString());
-		ety.setProperty(ACMDLEntry.NAME, e.getName());
-		ety.setProperty(ACMDLEntry.CREATED, new Date());
-		return ety;
-	}
-	
-	void updateDataStore(List<ACMDLEntry> lst) {
+
+		// Step 3: update datastore (see which entries are new) 
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-		
-		Iterator<ACMDLEntry>itr = lst.iterator();
+		Iterator<ACMDLEntry>itr = visitor.getList().iterator();
 		while (itr.hasNext()) {
 			ACMDLEntry entry = itr.next();
 			Query q = new Query(ACMDLEntry.KIND).setKeysOnly();
@@ -83,9 +67,7 @@ public class ACMUpdaterServlet extends HttpServlet {
 				System.out.println("Skipped (exists): " + entry.getName());
 				continue;
 			}
-
-			datastore.put(createEntity(entry));
+			datastore.put(entry.createEntity());
 		}
-		
 	}
 }
