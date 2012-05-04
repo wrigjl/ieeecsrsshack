@@ -60,9 +60,9 @@ public class ACMUpdaterServlet extends HttpServlet {
 	
 	Entity createEntity(ACMDLEntry e) {
 		Entity ety = new Entity("ACMDLEntry");
-		ety.setProperty("url", e.getURL().toString());
-		ety.setProperty("name", e.getName());
-		ety.setProperty("created", new Date());
+		ety.setProperty(ACMDLEntry.URL, e.getURL().toString());
+		ety.setProperty(ACMDLEntry.NAME, e.getName());
+		ety.setProperty(ACMDLEntry.CREATED, new Date());
 		return ety;
 	}
 	
@@ -72,9 +72,9 @@ public class ACMUpdaterServlet extends HttpServlet {
 		Iterator<ACMDLEntry>itr = lst.iterator();
 		while (itr.hasNext()) {
 			ACMDLEntry entry = itr.next();
-			Query q = new Query("ACMDLEntry").setKeysOnly();
-			q.addFilter("url", Query.FilterOperator.EQUAL, entry.getURL().toString());
-			q.addFilter("name", Query.FilterOperator.EQUAL, entry.getName());
+			Query q = new Query(ACMDLEntry.KIND).setKeysOnly();
+			q.addFilter(ACMDLEntry.URL, Query.FilterOperator.EQUAL, entry.getURL().toString());
+			q.addFilter(ACMDLEntry.NAME, Query.FilterOperator.EQUAL, entry.getName());
 			
 			PreparedQuery pq = datastore.prepare(q);
 			if (pq.countEntities(FetchOptions.Builder.withDefaults()) != 0) {

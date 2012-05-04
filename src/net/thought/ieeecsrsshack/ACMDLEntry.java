@@ -3,6 +3,7 @@ package net.thought.ieeecsrsshack;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+// TODO java doc-ify
 public class ACMDLEntry {
 	ACMDLEntry(String name, URL url) {
 		this.url = url;
@@ -34,4 +35,9 @@ public class ACMDLEntry {
 	
 	private URL url;
 	private String name;
+	
+	static public final String KIND = "ACMDLEntry";
+	static public final String NAME = "name";
+	static public final String URL = "url";
+	static public final String CREATED = "created";
 }
