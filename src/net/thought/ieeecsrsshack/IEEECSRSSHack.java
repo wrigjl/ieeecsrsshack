@@ -20,7 +20,14 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
-
+/**
+ * The IEEE Computer Society library feeds are broken. Fortunately,
+ * they are fixable. This class grabs the appropriate document and
+ * subclasses do the fixes specific to the kind of breakage.
+ * 
+ * @author Jason L. Wright (jason@thought.net)
+ *
+ */
 @SuppressWarnings("serial")
 public abstract class IEEECSRSSHack extends HttpServlet {
 	private String url;
@@ -32,10 +39,6 @@ public abstract class IEEECSRSSHack extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
 		resp.setContentType("application/rss+xml");
-		parseXmlFile(resp);
-	}
-	
-	private void parseXmlFile(HttpServletResponse rsp) throws IOException {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		Document dom;
 		
@@ -43,13 +46,13 @@ public abstract class IEEECSRSSHack extends HttpServlet {
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			dom = db.parse(url);
 		} catch (ParserConfigurationException pce) {
-			rsp.getWriter().println("failed in parser configuration");
+			resp.getWriter().println("failed in parser configuration");
 			return;
 		} catch (SAXException se) {
-			rsp.getWriter().println("failed in sax");
+			resp.getWriter().println("failed in sax");
 			return;
 		} catch (IOException ioe) {
-			rsp.getWriter().println("failed in i/o");
+			resp.getWriter().println("failed in i/o");
 			return;
 		}
 
@@ -69,7 +72,7 @@ public abstract class IEEECSRSSHack extends HttpServlet {
 				if (itemn.getNodeType() != Node.ELEMENT_NODE)
 					continue;
 				
-				fix_item(dom, rsp, (Element)itemn);
+				fix_item(dom, resp, (Element)itemn);
 			}
 		}
 		
@@ -78,17 +81,18 @@ public abstract class IEEECSRSSHack extends HttpServlet {
 			Transformer transformer;
 			transformer = xformf.newTransformer();
 			DOMSource src = new DOMSource(doc);
-			StreamResult dst = new StreamResult(rsp.getWriter());
+			StreamResult dst = new StreamResult(resp.getWriter());
 			transformer.transform(src, dst);
 		} catch (TransformerConfigurationException e) {
-			rsp.getWriter().println("Messed up transformerconfigurationexception");
+			resp.getWriter().println("Messed up transformerconfigurationexception");
 		} catch (TransformerException e) {
-			rsp.getWriter().println("Messed up transformerexception");
+			resp.getWriter().println("Messed up transformerexception");
 		}
 	}
 	
+	
 	/**
-	 * Called for each rss/channel/item to be fixed.
+	 * Called for each RSS/channel/item to be fixed.
 	 *  
 	 * @param dom Document object for creating new nodes
 	 * @param rsp Servlet response (for error reporting)
@@ -109,6 +113,13 @@ public abstract class IEEECSRSSHack extends HttpServlet {
 		return (false);
 	}
 	
+	/**
+	 * For a given node list, concatenate the values of all text nodes.
+	 * 
+	 * @param nl list of nodes
+	 * @return resulting concenated string
+	 * @throws DOMException
+	 */
 	String get_text(NodeList nl) throws DOMException {
 		String r = "";
 

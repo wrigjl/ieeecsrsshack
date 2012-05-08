@@ -8,7 +8,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-
+/**
+ * Journal list has a useless &lt;guid isPermaLink="true"&gt; object. Delete it and
+ * create a new one with the contents of the &lt;link&gt; node on the fly.
+ * 
+ * @author Jason L. Wright (jason@thought.net)
+ */
 @SuppressWarnings("serial")
 public class IEEECSJournalServlet extends IEEECSRSSHack {
 	/**
@@ -20,13 +25,13 @@ public class IEEECSJournalServlet extends IEEECSRSSHack {
 	
 	/**
 	 * Journal list has a useless &lt;guid isPermaLink="true"&gt; object. Delete it and
-	 * create a new one with the contents of the &gt;link&gt; node.
+	 * create a new one with the contents of the &lt;link&gt; node.
 	 * 
 	 * @param dom Document object for creating new nodes
 	 * @param rsp Servlet response (for error reporting)
 	 * @param item document item to be fixed
 	 * 
-	 * @throws DOMException on errors from the DOM object (eg. removeChild)
+	 * @throws DOMException on errors from the DOM object (e.g. removeChild)
 	 */
 	void fix_item(Document dom, HttpServletResponse rsp, Element item) throws DOMException {
 		NodeList links = item.getElementsByTagName("link");
