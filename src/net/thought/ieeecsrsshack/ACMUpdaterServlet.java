@@ -37,8 +37,6 @@ public class ACMUpdaterServlet extends HttpServlet {
 
 		TagNode tagnode = null;
 		try {
-			System.setProperty("http.proxyHost", "webbalance.inel.gov");
-			System.setProperty("http.proxyPort", "8080");
 			tagnode = cleaner.clean(new URL(url));
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
