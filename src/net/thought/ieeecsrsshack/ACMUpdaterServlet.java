@@ -4,11 +4,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Date;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
@@ -17,12 +14,35 @@ import javax.servlet.http.*;
 import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
+import org.w3c.dom.DOMException;
 
-// TODO javadoc-ify
+/**
+ * The ACM Digital Library main web page has a nice list of new items
+ * added to the library.  I have asked they produce an RSS feed (more than
+ * a year ago), and I'm tired of waiting.
+ * 
+ * So, this class pulls their web page once a day and parses it into
+ * the google datastore.
+ * 
+ * @author Jason L. Wright (jason@thought.net)
+ *
+ */
 @SuppressWarnings("serial")
 public class ACMUpdaterServlet extends HttpServlet {
+	/**
+	 * The URL to fetch.
+	 */
 	final private String url = "http://dl.acm.org/";
 
+	/**
+	 * the "get" here just sets off the fetch of the ACM library
+	 * page: parse and store the entries for display.
+	 *  
+	 * @param req Servlet request object
+	 * @param rsp Servlet response
+	 * 
+	 * @throws IOException
+	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
 		resp.setContentType("text/html");
