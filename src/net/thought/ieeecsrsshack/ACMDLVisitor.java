@@ -9,19 +9,34 @@ import org.htmlcleaner.HtmlNode;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.TagNodeVisitor;
 
-// TODO javadoc-ify
+/**
+ * Parse up the HTML (visit each node until we find the ones we care about.
+ * 
+ * @author Jason L. Wright (jason@thought.net)
+ */
 public class ACMDLVisitor implements TagNodeVisitor {
-	private List<ACMDLEntry> theList;
-	
+	/**
+	 * initialize this object (create empty entry list)
+	 */
 	ACMDLVisitor() {
 		super();
 		theList = new LinkedList<ACMDLEntry>();
 	}
-	
+
+	/**
+	 * Get the list of entries found.
+	 * @return list of entries
+	 */
 	public List<ACMDLEntry> getList() {
 		return theList;
 	}
-	
+
+	/**
+	 * visit the nodes of the html and find digital library entries
+	 * 
+	 * @param tn tag node (not used)
+	 * @param htmlNode current node
+	 */
 	public boolean visit(TagNode tn, HtmlNode htmlNode) {
 		if (htmlNode instanceof TagNode) {
 			TagNode tag = (TagNode)htmlNode;
@@ -40,22 +55,22 @@ public class ACMDLVisitor implements TagNodeVisitor {
 		}
 		return (true);
 	}
-	
-	public void parseRecent(TagNode td) {
+
+	private void parseRecent(TagNode td) {
 		TagNode[] divs = td.getElementsByName("div", false);
 		for (int i = 0; i < divs.length; i++) {
 			parseOuterDiv(divs[i]);
 		}
 	}
 
-	public void parseOuterDiv(TagNode divo) {
+	private void parseOuterDiv(TagNode divo) {
 		TagNode[] divs = divo.getElementsByName("div", false);
 		for (int i = 0; i < divs.length; i++) {
 			parseInnerDiv(divs[i]);
 		}
 	}
 
-	public void parseInnerDiv(TagNode divi) {
+	private void parseInnerDiv(TagNode divi) {
 		String name = null;
 
 		List<?> kids = divi.getChildren();
@@ -91,4 +106,6 @@ public class ACMDLVisitor implements TagNodeVisitor {
 			}
 		}
 	}
+	
+	private List<ACMDLEntry> theList;
 }
