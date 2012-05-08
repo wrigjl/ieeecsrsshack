@@ -40,7 +40,7 @@ public class ACMDisplayServlet extends HttpServlet {
 	 * Constructor: just build the date format for all date objects
 	 */
 	public ACMDisplayServlet() {
-		dateformat = new SimpleDateFormat("EEE, dd MMM YYYY HH:mm:ss Z");
+		dateformat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
 	}
 	
 	/**
@@ -52,6 +52,7 @@ public class ACMDisplayServlet extends HttpServlet {
 	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
+		Date currentDate = null;
 		resp.setContentType("application/rss+xml");
 		
 		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
@@ -77,12 +78,7 @@ public class ACMDisplayServlet extends HttpServlet {
 		createSimpleText(doc, channel, "title", "ACM Digital Library recent additions");
 		createSimpleText(doc, channel, "link", "http://dl.acm.org");
 		createSimpleText(doc, channel, "description", "Recently uploaded publications to the ACM digital library");
-		
-		// TODO deal with pubDate/lastBuildDate
-		Date dd = new Date();
-		createSimpleText(doc, channel, "pubDate", dateformat.format(dd));
-		createSimpleText(doc, channel, "lastBuildDate", dateformat.format(dd));
-		
+				
 		Query q = new Query(ACMDLEntry.KIND);
 		q.addSort(ACMDLEntry.CREATED, SortDirection.DESCENDING);
 		for (Entity e : ds.prepare(q).asIterable()) {
@@ -95,9 +91,17 @@ public class ACMDisplayServlet extends HttpServlet {
 			Element guid = createSimpleText(doc, item, "guid", (String) e.getProperty(ACMDLEntry.URL));
 			guid.setAttribute("isPermaLink", "true");
 			
-			dd = (Date) e.getProperty(ACMDLEntry.CREATED);
+			Date dd = (Date) e.getProperty(ACMDLEntry.CREATED);
 			createSimpleText(doc, item, "pubDate", dateformat.format(dd));
+			
+			if (currentDate == null)
+				currentDate = dd;
 		}
+		
+		if (currentDate == null)
+			currentDate = new Date();
+		createSimpleText(doc, channel, "pubDate", dateformat.format(currentDate));
+		createSimpleText(doc, channel, "lastBuildDate", dateformat.format(currentDate));
 		
 		try {
 			TransformerFactory transfac = TransformerFactory.newInstance();
