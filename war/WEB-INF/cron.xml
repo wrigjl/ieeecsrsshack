@@ -1,0 +1,8 @@
+<cronentries>
+	<cron>
+		<url>/acmdlupdater</url>
+		<description>update from the ACM Digital Library page]]></description>
+		<schedule>every day 04:00]]></schedule>
+		<timezone>US/Mountain</timezone>
+	</cron>
+</cronentries>

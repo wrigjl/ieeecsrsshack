@@ -38,4 +38,12 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>ACMDisplay</servlet-name>
 		<servlet-class>net.thought.ieeecsrsshack.ACMDisplayServlet</servlet-class>
 	</servlet>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>updater</web-resource-name>
+			<url-pattern>/acmdlupdater</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name></auth-constraint>
+	</security-constraint>
 </web-app>
