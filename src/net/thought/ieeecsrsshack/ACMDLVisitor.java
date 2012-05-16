@@ -98,12 +98,14 @@ public class ACMDLVisitor implements TagNodeVisitor {
 			href = href.replaceAll("&CFTOKEN=[0-9]+", "");
 			href = "http://dl.acm.org/" + href;
 			String fullname = name + " (" + subname + ")";
+			ACMDLEntry dlentry;
+			
 			try {
-				theList.add(new ACMDLEntry(fullname, href));
+				dlentry = new ACMDLEntry(fullname, href);
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				dlentry = new ACMDLEntry(fullname);
 			}
+			theList.add(dlentry);
 		}
 	}
 	

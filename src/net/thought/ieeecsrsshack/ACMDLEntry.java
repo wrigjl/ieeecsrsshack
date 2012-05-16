@@ -29,6 +29,13 @@ public class ACMDLEntry {
 		this(name, new URL(urls));
 	}
 	
+	/*
+	 * Construct ACMDLEntry with no URL
+	 */
+	ACMDLEntry(String name) {
+		this(name, (URL)null);
+	}
+	
 	/**
 	 * (re)set the name of the journal
 	 * 

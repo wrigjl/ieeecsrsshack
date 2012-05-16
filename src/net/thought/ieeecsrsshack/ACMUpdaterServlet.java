@@ -55,16 +55,15 @@ public class ACMUpdaterServlet extends HttpServlet {
 		try {
 			tagnode = cleaner.clean(new URL(url));
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			resp.sendError(500, "bad URL: " + url);
+			return;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			resp.sendError(500, "fetching ACM DL page: " + e.getMessage());
+			return;
 		}
-
 		if (tagnode == null) {
-			System.out.println("not parse file!");
-			System.exit(1);
+			resp.sendError(500, "error parsing DL file (no root)");
+			return;
 		}
 
 		// Step 2: traverse the page and build entries
@@ -84,7 +83,6 @@ public class ACMUpdaterServlet extends HttpServlet {
 			if (pq.countEntities(FetchOptions.Builder.withDefaults()) != 0) {
 				// This one is already in the store, chuck it.
 				itr.remove();
-				System.out.println("Skipped (exists): " + entry.getName());
 				continue;
 			}
 			datastore.put(entry.createEntity());

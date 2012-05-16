@@ -62,8 +62,7 @@ public class ACMDisplayServlet extends HttpServlet {
 		try {
 			docBuilder = dbfac.newDocumentBuilder();
 		} catch (ParserConfigurationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			resp.sendError(500, "bad parser configuration: " + e1.getMessage());
 			return;
 		}
 		Document doc = docBuilder.newDocument();
@@ -113,8 +112,8 @@ public class ACMDisplayServlet extends HttpServlet {
 			trans.transform(source, result);
 			resp.getOutputStream().print(sw.toString());
 		} catch (TransformerException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			resp.sendError(500, "transformer exception:" + e1.getMessage());
+			return;
 		}
 	}
 
