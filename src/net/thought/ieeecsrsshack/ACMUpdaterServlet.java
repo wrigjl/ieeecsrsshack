@@ -14,7 +14,6 @@ import javax.servlet.http.*;
 import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
-import org.w3c.dom.DOMException;
 
 /**
  * The ACM Digital Library main web page has a nice list of new items
